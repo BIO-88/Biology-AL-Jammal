@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>موقع استاذ احمد الجمال</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f9;
+            color: #333;
+            line-height: 1.6;
+            padding-top: 70px;
+            overflow-x: hidden;
+        }
+
+        /* القائمة العلوية */
+        .navbar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 60px;
+            background-color: #1a365d;
+            color: white;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .navbar h2 {
+            font-size: 1.2rem;
+        }
+
+        .hamburger {
+            font-size: 24px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: white;
+            padding: 5px;
+        }
+
+        /* القائمة الجانبية المنزلقة */
+        .side-menu {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 280px;
+            max-width: 80%;
+            height: 100%;
+            background-color: #2b6cb0;
+            z-index: 1002;
+            padding-top: 60px;
+            transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.2);
+        }
+
+        .side-menu.active {
+            transform: translateX(0);
+        }
+
+        /* غطاء شفاف خلف القائمة */
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1001;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .menu-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .side-menu .close-btn {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            font-size: 26px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .side-menu ul {
+            list-style: none;
+        }
+
+        .side-menu ul li a {
+            display: block;
+            padding: 15px 20px;
+            color: white;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            font-size: 1.05rem;
+        }
+
+        .side-menu ul li a:hover {
+            background-color: #2c5282;
+        }
+
+        /* المحتوى الرئيسي وتنظيم الصفحات */
+        .container {
+            max-width: 1100px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+
+        .page-content {
+            display: none;
+        }
+
+        .page-content.active {
+            display: block;
+        }
+
+        /* الصفحة الرئيسية */
+        .hero-section {
+            text-align: center;
+            background: white;
+            padding: 30px 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        /* صورة الأستاذ: بأبعادها مع التوهج الأزرق */
+        .teacher-img {
+            width: 360px;
+            height: 450px;
+            max-width: 100%;
+            border-radius: 16px;
+            object-fit: cover;
+            margin: 0 auto 20px auto;
+            display: block;
+            border: 3px solid #3182ce;
+            box-shadow: 0 0 25px rgba(49, 130, 206, 0.6), 0 0 10px rgba(49, 130, 206, 0.4);
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        .teacher-img:hover {
+            box-shadow: 0 0 35px rgba(49, 130, 206, 0.85), 0 0 15px rgba(49, 130, 206, 0.6);
+            transform: scale(1.01);
+        }
+
+        .degree-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            align-items: center;
+        }
+
+        .degree-img-container {
+            flex: 1;
+            min-width: 280px;
+            text-align: center;
+        }
+
+        /* صورة الشهادة المصدقة مع Glow أزرق */
+        .degree-img-container img {
+            width: 100%;
+            max-width: 350px;
+            height: auto;
+            border-radius: 10px;
+            border: 2px solid #3182ce;
+            box-shadow: 0 0 20px rgba(49, 130, 206, 0.5);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .degree-img-container img:hover {
+            box-shadow: 0 0 30px rgba(49, 130, 206, 0.75);
+        }
+
+        .boxes-container {
+            flex: 1;
+            min-width: 280px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .info-box {
+            background-color: #ebf8ff;
+            border-right: 4px solid #3182ce;
+            padding: 12px 15px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
+
+        .marks-section, .reviews-section {
+            text-align: center;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+
+        /* صورة كشف العلامات مع Glow أزرق */
+        .marks-section img {
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            border-radius: 10px;
+            margin-top: 15px;
+            border: 2px solid #3182ce;
+            box-shadow: 0 0 20px rgba(49, 130, 206, 0.5);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .marks-section img:hover {
+            box-shadow: 0 0 30px rgba(49, 130, 206, 0.75);
+        }
+
+        .slider-container {
+            position: relative;
+            max-width: 600px;
+            margin: 20px auto 0;
+            overflow: hidden;
+            border-radius: 10px;
+            border: 2px solid #3182ce;
+            box-shadow: 0 0 20px rgba(49, 130, 206, 0.5);
+        }
+
+        .slide {
+            display: none;
+            width: 100%;
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+        }
+
+        .slide.active {
+            display: block;
+            opacity: 1;
+        }
+
+        .slide img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            display: block;
+        }
+
+        /* شبكة الكروت للأقسام الفرعية */
+        .section-header {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .item-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border-top: 5px solid #2b6cb0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .item-card h4 {
+            margin-bottom: 10px;
+            color: #1a365d;
+        }
+
+        .item-card p {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .card-btn {
+            display: inline-block;
+            text-align: center;
+            background-color: #3182ce;
+            color: white;
+            padding: 10px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+
+        .card-btn:hover {
+            background-color: #2b6cb0;
+            box-shadow: 0 0 10px rgba(49, 130, 206, 0.5);
+        }
+
+        /* قسم التواصل */
+        .contact-container {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        .contact-item:hover {
+            background: #edf2f7;
+        }
+
+        .contact-item i {
+            font-size: 24px;
+        }
+
+        /* التذييل */
+        footer {
+            background-color: #1a365d;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+
+        .social-icons {
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .social-icons a {
+            color: white;
+            font-size: 24px;
+            text-decoration: none;
+        }
+
+        .social-icons a.whatsapp:hover { color: #25D366; }
+        .social-icons a.telegram:hover { color: #0088cc; }
+
+        /* تجاوب إضافي للشاشات الصغيرة جداً */
+        @media (max-width: 480px) {
+            body {
+                padding-top: 65px;
+            }
+            .navbar h2 {
+                font-size: 1rem;
+            }
+            .hero-section, .degree-section, .marks-section, .reviews-section {
+                padding: 15px;
+            }
+            .teacher-img {
+                max-width: 100%;
+            }
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- غطاء خلفية القائمة الجانبية -->
+    <div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
+
+    <!-- الشريط العلوي -->
+    <div class="navbar">
+        <h2>موقع استاذ احمد الجمال</h2>
+        <button class="hamburger" onclick="toggleMenu()" aria-label="فتح القائمة"><i class="fas fa-bars"></i></button>
+    </div>
+
+    <!-- القائمة الجانبية -->
+    <div class="side-menu" id="sideMenu">
+        <span class="close-btn" onclick="toggleMenu()">&times;</span>
+        <ul>
+            <li><a onclick="showPage('home')">الصفحة الرئيسية</a></li>
+            <li><a onclick="showPage('tests')">1- اختبارات المعلم</a></li>
+            <li><a onclick="showPage('homeworks')">2- واجبات المعلم</a></li>
+            <li><a onclick="showPage('files')">3- ملفات المادة</a></li>
+            <li><a onclick="showPage('contact')">4- التواصل مع الاستاذ</a></li>
+        </ul>
+    </div>
+
+    <div class="container">
+        
+        <!-- الصفحة الرئيسية -->
+        <div id="home" class="page-content active">
+            <section class="hero-section">
+                <img src="https://i.ibb.co/KxLp67rz/IMG-20260808-WA0021.jpg" alt="صورة الأستاذ أحمد الجمال" class="teacher-img">
+                <h1>الأستاذ أحمد الجمال</h1>
+                <p style="margin-top: 15px;">هنا تضاف المقدمة التعريفية الخاصة بالأستاذ أحمد الجمال...</p>
+            </section>
+
+            <section class="degree-section">
+                <div class="degree-img-container">
+                    <h3>الشهادة المصدقه للأستاذ</h3>
+                    <img src="certificate.jpg" alt="الشهادة المصدقة" style="margin-top: 10px;">
+                </div>
+                <div class="boxes-container">
+                    <div class="info-box">بكالوريس علوم حياتيه</div>
+                    <div class="info-box">ماجستير علوم حياتيه "تقنيات حيوية "</div>
+                    <div class="info-box">خبرة 16 سنة في التصحيح الوزاري</div>
+                    <div class="info-box">مدرس مادة الاحياء الدقيقة سابقا في جامعة البلقاء التطبيقية</div>
+                    <div class="info-box">مدرس مادة الاحياء لجميع الفروع التطبيقية</div>
+                </div>
+            </section>
+
+            <section class="marks-section">
+                <h3>كشف العلامات</h3>
+                <img src="marks.jpg" alt="كشف العلامات">
+            </section>
+
+            <section class="reviews-section">
+                <h3>إنجازاتنا</h3>
+                <div class="slider-container" id="slider">
+                    <div class="slide active"><img src="https://i.ibb.co/7N10cqJM/Picsart-26-08-09-16-07-21-603.jpg" alt="راي ١"></div>
+                    <div class="slide"><img src="https://i.ibb.co/pGDJd6y/Picsart-26-08-09-16-06-54-771.jpg" alt="رأي طالب 2"></div>
+                    <div class="slide"><img src="https://i.ibb.co/99cCVMv9/Picsart-26-08-09-16-06-12-397.jpg" alt="رأي طالب 3"></div>
+                    <div class="slide"><img src="https://i.ibb.co/Mx4GFBgz/Picsart-26-08-09-16-05-29-923.jpg" alt="رأي طالب 4"></div>
+                    <div class="slide"><img src="https://i.ibb.co/pj6nCbqf/Picsart-26-08-09-16-05-27-104.jpg" alt="number 5"></div>
+                    <div class="slide"><img src="https://i.ibb.co/bRBS2HFm/Picsart-26-08-09-16-04-52-944.jpg" alt="number 6"></div>
+                    <div class="slide"><img src="https://i.ibb.co/N27rrF84/Picsart-26-08-09-16-04-06-536.jpg" alt="number 8"></div>
+                    <div class="slide"><img src="https://i.ibb.co/5hPFScTJ/Picsart-26-08-09-16-03-26-290.jpg" alt="number 9"></div>
+                    <div class="slide"><img src="https://i.ibb.co/m5ZNn5Ms/Picsart-26-08-09-16-02-56-305.jpg" alt="number 10"></div>
+                    <div class="slide"><img src="https://i.ibb.co/ccKNhx1r/Picsart-26-08-09-16-02-04-111.jpg" alt="number 11"></div>
+                    <div class="slide"><img src="https://i.ibb.co/pj1xSpwG/Picsart-26-08-09-16-02-01-497.jpg" alt="number 12"></div>
+                    <div class="slide"><img src="https://i.ibb.co/KcD92YTp/Picsart-26-08-09-16-01-29-264.jpg" alt="number 13"></div>
+                    <div class="slide"><img src="https://i.ibb.co/xSC6hWWf/Picsart-26-08-09-16-01-01-313.jpg" alt="number 14"></div>
+                    <div class="slide"><img src="https://i.ibb.co/211Q4QvV/Picsart-26-08-09-15-59-51-340.jpg" alt="number 15"></div>
+                    <div class="slide"><img src="https://i.ibb.co/nsT6Wbt5/Picsart-26-08-09-15-59-03-993.jpg" alt="number 16"></div>
+                    <div class="slide"><img src="https://i.ibb.co/Fkh3sntN/Picsart-26-08-09-15-58-11-470.jpg" alt="number 17"></div>
+                </div>
+            </section>
+        </div>
+
+        <!-- 1- اختبارات المعلم -->
+        <div id="tests" class="page-content">
+            <div class="section-header"><h2>اختبارات المعلم</h2></div>
+            <div class="cards-grid">
+                <div class="item-card">
+                    <h4>اختبارات الوحدة 1</h4>
+                    <p>هنا يوجد جميع اختبارات الوحدة</p>
+                    <a href="https://drive.google.com/drive/folders/1-aOb6_6PSDanRf5L7folb8hczQxojPhr" target="_blank" class="card-btn"><i class="fas fa-file-signature"></i> عرض</a>
+                </div>
+                <div class="item-card">
+                    <h4>اختبارات الوحدة 2</h4>
+                    <p>هنا يوجد جميع اختبارات الوحدة</p>
+                    <a href="https://drive.google.com/drive/folders/1-bhE5kV-7rtwbnK2OvqCGN_fuXQi_KdT" target="_blank" class="card-btn"><i class="fas fa-file-signature"></i> عرض </a>
+                </div>
+                <div class="item-card">
+                    <h4>اختبارات الوحدة 3</h4>
+                    <p>هنا يوجد جميع اختبارات الوحدة</p>
+                    <a href="https://drive.google.com/drive/folders/1-dN3aKk6Oey0VePdlGFkcRtm8qE4zWJV" target="_blank" class="card-btn"><i class="fas fa-file-signature"></i>  عرض PDF</a>
+             
+        </div>
+
+        <!-- 2- واجبات المعلم -->
+        <div id="homeworks" class="page-content">
+            <div class="section-header"><h2>واجبات المعلم</h2></div>
+            <div class="cards-grid">
+                <div class="item-card">
+                    <h4>واجبات الوحدة 1 (PDF)</h4>
+                    <p>أسئلة ومسائل على الوحدة الاولى</p>
+                    <a href="https://drive.google.com/drive/folders/1-0ICRQ0-hx9rj8xVcK63tRCLQlgq-zIJ" target="_blank" class="card-btn"><i class="fas fa-file-pdf"></i> فتح ملف الواجب</a>
+                </div>
+                <div class="item-card">
+                    <h4>واجبات الوحدة 2 (PDF)</h4>
+                    <p>أسئلة ومسائل على الوحدة الثانية</p>
+                    <a href="homework2.pdf" target="_blank" class="card-btn"><i class="fas fa-file-pdf"></i> فتح ملف الواجب</a>
+                </div>
+                <div class="item-card">
+                    <h4>واجبات الوحدة 3 (PDF)</h4>
+                    <p>أسئلة ومسائل على الوحدة الثالثة</p>
+                    <a href="https://drive.google.com/drive/folders/1-43XlPrAfTyx8tDbSV55w3kOf4x_hopU" target="_blank" class="card-btn"><i class="fas fa-file-pdf"></i> فتح ملف الواجب</a>
+                </div>
+                </div>
+
+        <!-- 3- ملفات المادة -->
+        <div id="files" class="page-content">
+            <div class="section-header"><h2>ملفات المادة</h2></div>
+            <div class="cards-grid">
+                <div class="item-card">
+                    <h4>ملفات الوحدة 1</h4>
+                    <p>ملفات وتلاخيص الوحدة </p>
+                    <a href="https://drive.google.com/drive/folders/1-zFnzVxz6wjaAvg3U6DQlyWWo_s6qV8t" target="_blank" class="card-btn"><i class="fas fa-download"></i> تحميل الملف (PDF)</a>
+                </div>
+                <div class="item-card">
+                    <h4>ملفات الوحدة 2</h4>
+                    <p>ملفات وتلاخيص الوحدة </p>
+                    <a href="https://drive.google.com/drive/folders/105MCYPSy0tHzlUIJj5lHegpY1Hmrl2vj" target="_blank" class="card-btn"><i class="fas fa-download"></i> تحميل الملف (PDF)</a>
+                </div>
+                <div class="item-card">
+                    <h4>ملفات الوحدة 3</h4>
+                    <p>ملفات وتلاخيص الوحدة </p>
+                    <a href="https://drive.google.com/drive/folders/10FygEUuSuCfOW_s3Vtxz9T7FDQQNH1sZ" target="_blank" class="card-btn"><i class="fas fa-download"></i> تحميل الملف (PDF)</a>
+                </div>
+                
+        </div>
+
+        <!-- 4- التواصل مع الاستاذ -->
+        <div id="contact" class="page-content">
+            <div class="section-header"><h2>التواصل مع الأستاذ</h2></div>
+            <div class="contact-container">
+                <a href="https://wa.me/+962785097982" class="contact-item" target="_blank" style="color: #25D366;">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>تواصل مباشر عبر الواتساب</span>
+                </a>
+                <a href="https://t.me/ahmadjammal1988" class="contact-item" target="_blank" style="color: #0088cc;">
+                    <i class="fab fa-telegram-plane"></i>
+                    <span>قناة التليجرام الرسمية</span>
+                </a>
+                <a href="https://t.me/Ahmedjammal1988" class="contact-item" target="_blank" style="color: #0088cc;">
+                    <i class="fab fa-telegram-plane"></i>
+                    <span>مجموعات التليجرام</span>
+                </a>
+                <a href="https://www.instagram.com/ahmedjammal1988?igsh=cjFjdmtmY2g0aW9q" class="contact-item" target="_blank" style="color: #E1306C;">
+                    <i class="fab fa-instagram"></i>
+                    <span>متابعة حساب إنستغرام</span>
+                </a>
+                <a href="https://www.facebook.com/share/1aqVqaj9tQ/" class="contact-item" target="_blank" style="color: #1877F2;">
+                    <i class="fab fa-facebook"></i>
+                    <span>متابعة صفحة الفيسبوك</span>
+                </a>
+                <a href="https://youtube.com/@ahmadaljammal?si=DI6DBGJatOG6jv3O" class="contact-item" target="_blank" style="color: #FF0000;">
+                    <i class="fab fa-youtube"></i>
+                    <span>الاشتراك بقناة اليوتيوب</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- التذييل -->
+    <footer>
+        <p>المساعدة والدعم الفني</p>
+        <div class="social-icons">
+            <a href="https://wa.me/+962785097982" class="whatsapp" target="_blank" title="واتساب"><i class="fab fa-whatsapp"></i></a>
+            <a href="https://t.me/ahmadjammal1988" class="telegram" target="_blank" title="تليجرام"><i class="fab fa-telegram-plane"></i></a>
+        </div>
+    </footer>
+
+    <script>
+        // فتح وإغلاق القائمة الجانبية
+        function toggleMenu() {
+            const sideMenu = document.getElementById('sideMenu');
+            const overlay = document.getElementById('menuOverlay');
+            
+            sideMenu.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        // التنقل بين الصفحات
+        function showPage(pageId) {
+            const pages = document.querySelectorAll('.page-content');
+            pages.forEach(page => page.classList.remove('active'));
+            
+            document.getElementById(pageId).classList.add('active');
+            
+            if (document.getElementById('sideMenu').classList.contains('active')) {
+                toggleMenu();
+            }
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // سلايدر آراء الطلاب
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+
+        function showNextSlide() {
+            if (slides.length === 0) return;
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }
+
+        setInterval(showNextSlide, 3500);
+    </script>
+</body>
+</html>
